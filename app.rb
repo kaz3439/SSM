@@ -62,15 +62,22 @@ get "/" do
   @app  =  @graph.get_object(ENV["FACEBOOK_APP_ID"])
 
   if session[:access_token]
-    @user    = @graph.get_object("me")
-    @friends = @graph.get_connections('me', 'friends')
-    @photos  = @graph.get_connections('me', 'photos')
-    @likes   = @graph.get_connections('me', 'likes').first(4)
-
-    # for other data you can always run fql
-    @friends_using_app = @graph.fql_query("SELECT uid, name, is_app_user, pic_square FROM user WHERE uid in (SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1")
+    albums = @graph.get_connection('k.hayashi.info', 'albums')
+    lazy_ssm_album = albums.select{|album| album["name"] == "Untitled Album" }
+    return if lazy_ssm_album.size != 1
+    ssm_album = lazy_ssm_album[0]
+    ssm_album_id = ssm_album["id"]
+    ps = api.get_connection(ssm_album_id, "photos")
+    ssm_pictures = Array.new
+    while !ps.nil?
+      ps.each{|p| ssm_pictures << p["source"] }
+      ps = ps.next_page
+      p ps
+    end
+    
+    @ssm_pictures = ssm_pictures
   end
-  erb :index
+    erb :index
 end
 
 # used by Canvas apps - redirect the POST to be a regular GET
