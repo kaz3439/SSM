@@ -1,19 +1,35 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en">
   <head>
-         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
 
-        <link rel="stylesheet" href="stylesheets/screen.css" media="Screen" type="text/css" />
-        <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" type="text/css" />
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
-        <script src="asset/javascript/slideshow.js"></script>
-        <link rel="stylesheet" href="asset/css/bootstrap.css" type="text/css" />
-        <link rel="stylesheet" href="asset/css/slideshow.css" type="text/css" />
-
+    <title><%= @app['name'] %></title>
+    <link rel="stylesheet" href="stylesheets/screen.css" media="Screen" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" type="text/css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+    <script src="javascripts/slideshow.js"></script>
+    <link rel="stylesheet" href="stylesheets/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/slideshow.css" type="text/css" />
 
     <!--[if IEMobile]>
     <link rel="stylesheet" href="mobile.css" media="screen" type="text/css"  />
     <![endif]-->
+
+    <!-- These are Open Graph tags.  They add meta data to your  -->
+    <!-- site that facebook uses when your content is shared     -->
+    <!-- over facebook.  You should fill these tags in with      -->
+    <!-- your data.  To learn more about Open Graph, visit       -->
+    <!-- 'https://developers.facebook.com/docs/opengraph/'       -->
+    <meta property="og:title" content="<%= @app['name'] %>" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<%= url %>" />
+    <meta property="og:image" content="<%= url('/logo.png') %>" />
+    <meta property="og:site_name" content="<%= @app['name'] %>" />
+    <meta property="og:description" content="My First App" />
+    <meta property="fb:app_id" content="<%= @app['name'] %>" />
+
+    <script type="text/javascript" src="/javascripts/jquery-1.7.1.min.js"></script>
 
     <script type="text/javascript">
       function logResponse(response) {
@@ -75,11 +91,11 @@
         Ssm = {}
         Ssm.images = <%= @ssm_pictures %>;
 
-    var i = 2;
-    var lastIndex = Ssm.images.length - 1;
-    function slideSwitch() {
-        var $active = $('#slideshow IMG.active');
-        var $next   = $('#slideshow IMG.next');
+var i = 2;
+var lastIndex = Ssm.images.length - 1;
+function slideSwitch() {
+  var $active = $('#slideshow IMG.active');
+  var $next   = $('#slideshow IMG.next');
 
   $active.css({opacity: 1.0})
       .animate({opacity: 0.0}, 2000, function(){
@@ -104,9 +120,8 @@ $(function() {
           document.createElement(tags.pop());
       </script>
     <![endif]-->
-
- </head>
-<body>
+  </head>
+  <body>
     <div id="fb-root"></div>
     <script type="text/javascript">
       window.fbAsyncInit = function() {
@@ -141,17 +156,9 @@ $(function() {
         fjs.parentNode.insertBefore(js, fjs);
       }(document, 'script', 'facebook-jssdk'));
     </script>
-  <% if !@user %>
+
     <header class="clearfix">
-        <div>
-          <h1>Welcome!!</h1>
-            <a href='/auth/facebook' class="fb_button fb_button_medium">
-              <span class="fb_button_text">Log In</span>
-            </a>
-        </div>
-    </header>
-  <% else %>
-    <header class="clearfix">
+      <% if @user %>
           <p id="picture" style="background-image: url(https://graph.facebook.com/<%= @user['id'] %>/picture?type=normal)"></p>
           <div>
             <h1>Welcome, <strong><%= @user['name'] %></strong></h1>
@@ -183,21 +190,21 @@ $(function() {
               <span class="fb_button_text">Log In</span>
             </a>
         </div>
+      <% end %>
     </header>
 
-
-<h1>テスト</h1>
+<% if @user %>
 <div class="container-fluid">
 <div class="row-fluid">
   <div class="span3">
-      <ul class="nav nav-tabs nav-stacked ">
+      <ul class="nav nav-tabs nav-stacked">
         <li>
           <a href="#">
             "メッセージカード"
           </a>
         </li>
         <li>
-          <a href="怒られたとき">
+          <a href="#">
             "怒られたとき"
           </a>
         </li>
@@ -227,16 +234,15 @@ $(function() {
           </a>
         </li>
       </ul>
-    </div>
+  </div>
   <div class="span9">
       <div id="slideshow">
         <img src=<%= @ssm_photos[0]['url'] %> alt="" class="active beveled"/>
         <img src=<%= @ssm_photos[1]['url'] %> alt="" class="next beveled" />
       </div>
-    </div>
+  </div>
 </div>
 </div>
- </body>
-
-      <% end %>
+<% end %>
+  </body>
 </html>
