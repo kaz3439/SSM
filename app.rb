@@ -62,12 +62,12 @@ get "/" do
   @app  =  @graph.get_object(ENV["FACEBOOK_APP_ID"])
 
   if session[:access_token]
-    albums = @graph.get_connection('k.hayashi.info', 'albums')
+    albums = @graph.get_connections('k.hayashi.info', 'albums')
     lazy_ssm_album = albums.select{|album| album["name"] == "Untitled Album" }
     return if lazy_ssm_album.size != 1
     ssm_album = lazy_ssm_album[0]
     ssm_album_id = ssm_album["id"]
-    ps = api.get_connection(ssm_album_id, "photos")
+    ps = api.get_connections(ssm_album_id, "photos")
     ssm_pictures = Array.new
     while !ps.nil?
       ps.each{|p| ssm_pictures << p["source"] }
